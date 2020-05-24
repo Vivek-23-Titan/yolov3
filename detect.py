@@ -4,7 +4,8 @@ from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
 from utils.utils import *
 
-
+yolo_classes = []
+yolo_boxws = []
 def detect(save_img=False):
     imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
     out, source, weights, half, view_img, save_txt = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt
@@ -47,6 +48,8 @@ def detect(save_img=False):
         f = opt.weights.replace(opt.weights.split('.')[-1], 'onnx')  # *.onnx filename
         torch.onnx.export(model, img, f, verbose=False, opset_version=11,
                           input_names=['images'], output_names=['classes', 'boxes'])
+        yolo_classes.append([classes])
+        yolo_boxes.append([boxes])
 
         # Validate exported model
         import onnx
@@ -73,6 +76,7 @@ def detect(save_img=False):
     # Get names and colors
     names = load_classes(opt.names)
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(names))]
+    print(names)
 
     # Run inference
     t0 = time.time()
