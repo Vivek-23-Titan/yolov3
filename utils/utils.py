@@ -627,6 +627,7 @@ def crop_images_random(path='../images/', scale=0.50):  # from utils.utils impor
 
             # apply random color mask
             cv2.imwrite(file, img[ymin:ymax, xmin:xmax])
+            print('xmin, ymin:', xmin, ymin,'xmax,ymax:', xmax, ymax)
 
 
 def coco_single_class_labels(path='../coco/labels/train2014/', label_class=43):
